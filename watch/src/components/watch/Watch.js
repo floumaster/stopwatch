@@ -1,8 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
+import { nanoid } from 'nanoid';
 
 function Watch(){
     const [time, setTime] = useState(8*86400 + 23*3600 + 55*60 + 2);
     let toFlip = ['seconds'];
+    const refs = {
+        days: React.useRef(),
+        hours: React.useRef(),
+        minutes: React.useRef(),
+        seconds: React.useRef()
+    }
     const getTime = (time) => {
         const getSeconds = `0${(time % 60)}`.slice(-2)
         const minutes = `${Math.floor(time / 60)}`
@@ -30,19 +37,14 @@ function Watch(){
                 toFlip.push('days');
             }
         },1000)
-        return ()=>{
-            clearInterval(Interval);
-        }
-    })
-    useEffect(()=>{
         const Interval2 = setInterval(()=>{
             toFlip.forEach(val=>{
-                let i = document.getElementsByClassName(`${val} lower`)[0];
-                i.classList.toggle("flipped")
-                i.classList.toggle("turned")
+                refs[val].current.classList.toggle("flipped");
+                refs[val].current.classList.toggle("turned");
             })
         },500)
         return ()=>{
+            clearInterval(Interval);
             clearInterval(Interval2)
         }
     })
@@ -52,7 +54,7 @@ function Watch(){
                 <div className="days upper">
                     {getTime(time).days}
                 </div>
-                <div className="days lower">
+                <div className="days lower" ref={refs.days}>
                     {getTime(time).days}
                 </div>
                 <div className="days page">
@@ -64,10 +66,10 @@ function Watch(){
                 <div className="hours upper">
                     {getTime(time).hours}
                 </div>
-                <div className="hours lower">
+                <div className="hours lower" ref={refs.hours}>
                     {getTime(time).hours}
                 </div>
-                <div className="days page">
+                <div className="hours page">
                     {getTime(time).hours}
                 </div>
                 <p className="title">HOURS</p>
@@ -76,10 +78,10 @@ function Watch(){
                 <div className="minutes upper">
                     {getTime(time).minutes}
                 </div>
-                <div className="minutes lower">
+                <div className="minutes lower" ref={refs.minutes}>
                     {getTime(time).minutes}
                 </div>
-                <div className="days page">
+                <div className="minutes page">
                     {getTime(time).minutes}
                 </div>
                 <p className="title">MINUTES</p>
@@ -88,10 +90,10 @@ function Watch(){
                 <div className="seconds upper">
                     {getTime(time).seconds}
                 </div>
-                <div className="seconds lower">
+                <div className="seconds lower" ref={refs.seconds}>
                     {getTime(time).seconds}
                 </div>
-                <div className="days page">
+                <div className="seconds page">
                     {getTime(time).seconds}
                 </div>
                 <p className="title">SECONDS</p>
